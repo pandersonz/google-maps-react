@@ -1,22 +1,22 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(['exports', './GoogleApiComponent', './components/Marker', './components/InfoWindow', './components/HeatMap', './components/Polygon', './components/Polyline', './components/Circle', 'react', 'prop-types', 'react-dom', './lib/String', './lib/cancelablePromise'], factory);
+    define(['exports', './GoogleApiComponent', './components/Marker', './components/InfoWindow', './components/HeatMap', './components/Polygon', './components/Polyline', 'react', 'prop-types', 'react-dom', './lib/String', './lib/cancelablePromise'], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require('./GoogleApiComponent'), require('./components/Marker'), require('./components/InfoWindow'), require('./components/HeatMap'), require('./components/Polygon'), require('./components/Polyline'), require('./components/Circle'), require('react'), require('prop-types'), require('react-dom'), require('./lib/String'), require('./lib/cancelablePromise'));
+    factory(exports, require('./GoogleApiComponent'), require('./components/Marker'), require('./components/InfoWindow'), require('./components/HeatMap'), require('./components/Polygon'), require('./components/Polyline'), require('react'), require('prop-types'), require('react-dom'), require('./lib/String'), require('./lib/cancelablePromise'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.GoogleApiComponent, global.Marker, global.InfoWindow, global.HeatMap, global.Polygon, global.Polyline, global.Circle, global.react, global.propTypes, global.reactDom, global.String, global.cancelablePromise);
+    factory(mod.exports, global.GoogleApiComponent, global.Marker, global.InfoWindow, global.HeatMap, global.Polygon, global.Polyline, global.react, global.propTypes, global.reactDom, global.String, global.cancelablePromise);
     global.index = mod.exports;
   }
-})(this, function (exports, _GoogleApiComponent, _Marker, _InfoWindow, _HeatMap, _Polygon, _Polyline, _Circle, _react, _propTypes, _reactDom, _String, _cancelablePromise) {
+})(this, function (exports, _GoogleApiComponent, _Marker, _InfoWindow, _HeatMap, _Polygon, _Polyline, _react, _propTypes, _reactDom, _String, _cancelablePromise) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.Map = exports.Circle = exports.Polyline = exports.Polygon = exports.HeatMap = exports.InfoWindow = exports.Marker = exports.GoogleApiWrapper = undefined;
+  exports.Map = exports.Polyline = exports.Polygon = exports.HeatMap = exports.InfoWindow = exports.Marker = exports.GoogleApiWrapper = undefined;
   Object.defineProperty(exports, 'GoogleApiWrapper', {
     enumerable: true,
     get: function () {
@@ -51,12 +51,6 @@
     enumerable: true,
     get: function () {
       return _Polyline.Polyline;
-    }
-  });
-  Object.defineProperty(exports, 'Circle', {
-    enumerable: true,
-    get: function () {
-      return _Circle.Circle;
     }
   });
 
@@ -205,7 +199,7 @@
         if (prevState.currentLocation !== this.state.currentLocation) {
           this.recenterMap();
         }
-        if (this.props.bounds && this.props.bounds !== prevProps.bounds) {
+        if (this.props.bounds !== prevProps.bounds) {
           this.map.fitBounds(this.props.bounds);
         }
       }
@@ -237,11 +231,15 @@
           var node = _reactDom2.default.findDOMNode(mapRef);
           var curr = this.state.currentLocation;
           var center = new maps.LatLng(curr.lat, curr.lng);
-
+          
           var mapTypeIds = this.props.google.maps.MapTypeId || {};
           var mapTypeFromProps = String(this.props.mapType).toUpperCase();
 
           var mapConfig = Object.assign({}, {
+            ////////added two properties//////
+            streetViewDefault: this.props.streetViewDefault,       //determines if the streetview will be seen by default (true/false)
+            objStreetViewDefault:this.props.objStreetViewDefault,  //receives the streetview object
+            //////////////////////////////////
             mapTypeId: mapTypeIds[mapTypeFromProps],
             center: center,
             zoom: this.props.zoom,
@@ -250,18 +248,14 @@
             clickableIcons: !!this.props.clickableIcons,
             disableDefaultUI: this.props.disableDefaultUI,
             zoomControl: this.props.zoomControl,
-            zoomControlOptions: this.props.zoomControlOptions,
             mapTypeControl: this.props.mapTypeControl,
-            mapTypeControlOptions: this.props.mapTypeControlOptions,
             scaleControl: this.props.scaleControl,
             streetViewControl: this.props.streetViewControl,
-            streetViewControlOptions: this.props.streetViewControlOptions,
             panControl: this.props.panControl,
             rotateControl: this.props.rotateControl,
             fullscreenControl: this.props.fullscreenControl,
             scrollwheel: this.props.scrollwheel,
             draggable: this.props.draggable,
-            draggableCursor: this.props.draggableCursor,
             keyboardShortcuts: this.props.keyboardShortcuts,
             disableDoubleClickZoom: this.props.disableDoubleClickZoom,
             noClear: this.props.noClear,
@@ -277,7 +271,14 @@
           });
 
           this.map = new maps.Map(node, mapConfig);
-
+          
+          ////////if streetViewDefault is true, create an instance of streetViewPanorama
+          if(mapConfig.streetViewDefault){           
+            var panorama = new maps.StreetViewPanorama(
+              node, mapConfig.objStreetViewDefault
+              );
+          }  
+          ///////
           evtNames.forEach(function (e) {
             _this4.listeners[e] = _this4.map.addListener(e, _this4.handleEvent(e));
           });
@@ -380,6 +381,10 @@
   }(_react2.default.Component);
 
   Map.propTypes = {
+    //////////added two properties//////
+    streetViewDefault: _propTypes2.default.bool,
+    objStreetViewDefault:_propTypes2.default.object,
+    ///////////////////////////////////////////
     google: _propTypes2.default.object,
     zoom: _propTypes2.default.number,
     centerAroundCurrentLocation: _propTypes2.default.bool,
@@ -395,18 +400,14 @@
     clickableIcons: _propTypes2.default.bool,
     disableDefaultUI: _propTypes2.default.bool,
     zoomControl: _propTypes2.default.bool,
-    zoomControlOptions: _propTypes2.default.object,
     mapTypeControl: _propTypes2.default.bool,
-    mapTypeControlOptions: _propTypes2.default.object,
     scaleControl: _propTypes2.default.bool,
     streetViewControl: _propTypes2.default.bool,
-    streetViewControlOptions: _propTypes2.default.object,
     panControl: _propTypes2.default.bool,
     rotateControl: _propTypes2.default.bool,
     fullscreenControl: _propTypes2.default.bool,
     scrollwheel: _propTypes2.default.bool,
     draggable: _propTypes2.default.bool,
-    draggableCursor: _propTypes2.default.string,
     keyboardShortcuts: _propTypes2.default.bool,
     disableDoubleClickZoom: _propTypes2.default.bool,
     noClear: _propTypes2.default.bool,
@@ -429,8 +430,11 @@
     centerAroundCurrentLocation: false,
     style: {},
     containerStyle: {},
+    ////////
+    streetViewDefault: false,
+    ///////
     visible: true
   };
-
+  
   exports.default = Map;
 });

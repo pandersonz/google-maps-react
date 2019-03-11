@@ -278,6 +278,14 @@
               node, mapConfig.objStreetViewDefault
               );
           }  
+
+          ///////
+          /*if(Object.keys(mapConfig.centerCoordenadas)>0){
+            mapConfig.center=mapConfig.centerCoordenadas;
+            console.log(mapConfig.center);
+          }else{
+            mapConfig.centerCoordenadas
+          }*/
           ///////
           evtNames.forEach(function (e) {
             _this4.listeners[e] = _this4.map.addListener(e, _this4.handleEvent(e));
@@ -324,6 +332,7 @@
           }
           // map.panTo(center)
           map.setCenter(center);
+          map.setZoom(60);
           maps.event.trigger(map, 'recenter');
         }
       }
@@ -384,6 +393,7 @@
     //////////added two properties//////
     streetViewDefault: _propTypes2.default.bool,
     objStreetViewDefault:_propTypes2.default.object,
+    
     ///////////////////////////////////////////
     google: _propTypes2.default.object,
     zoom: _propTypes2.default.number,
@@ -432,6 +442,7 @@
     containerStyle: {},
     ////////
     streetViewDefault: false,
+   
     ///////
     visible: true
   };
